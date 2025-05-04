@@ -4,6 +4,7 @@ import {
   Center,
   Divider,
   Flex,
+  Image,
   Input,
   Text,
   useToast,
@@ -19,13 +20,12 @@ function Login() {
   const [password, setPassword] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
-  console.log(import.meta.env);
   const { signInWithEmail, signInWithOAuth, currentUser } = UserAuth();
- 
-  //auth kuhusus google dan facebook
+  
+
   useEffect(() => {
     if (currentUser) {
-      navigate("/"); // redirect ke dashboard jika sudah login
+      navigate("/");
     }
   }, [currentUser, navigate]);
 
@@ -37,9 +37,7 @@ function Login() {
         password,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       const token = data.session.access_token;
       localStorage.setItem("access_token", token);
@@ -48,7 +46,6 @@ function Login() {
         status: "success",
         position: "top",
       });
-      // navigate("/"); // arahkan ke halaman utama atau dashboard
     } catch (err) {
       toast({
         title: "Login gagal",
@@ -62,67 +59,94 @@ function Login() {
   };
 
   return (
-    <Center w="100%" h="100dvh" px="10px">
-      <Flex flexDir="column" maxW="400px" w="100%" gap="20px">
-        <Text fontSize="2xl" textAlign="center" color={"gray.600"}>
-          Login
-        </Text>
-        <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          color="black"
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          color="black"
-        />
-        <Button
-          isLoading={loading}
-          onClick={handleLoginWithEmail}
-          colorScheme="teal"
-        >
-          Login
-        </Button>
-        <Text mt={2}color={"gray.600"}>
-        Lupa Kata Sandi?{" "}
-  <a href="/reset-password" style={{ color: "blue" }}>
-    klik disini
-  </a>
-</Text>
-        <Text color={"gray.600"}>
-          Don&apos;t have an account?{" "}
-          <a href="/register" style={{ color: "blue" }}>
-            Register
-          </a>
-        </Text>
-        <Flex my="25px" align="center" px="10%">
-          <Divider />
-          <Text px="15px" color={"gray.600"}>OR</Text>
-          <Divider />
+    <Center w="100%" h="100dvh" bg="gray.50" px="10px">
+      <Box
+        bg="white"
+        p={8}
+        borderRadius="lg"
+        boxShadow="md"
+        w="100%"
+        maxW="400px"
+      >
+        <Flex flexDir="column" gap="20px">
+          <Text fontSize="2xl" fontWeight="bold" textAlign="center" color="gray.700">
+            Login
+          </Text>
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            color="black"
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            color="black"
+          />
+          <Button
+            isLoading={loading}
+            onClick={handleLoginWithEmail}
+            colorScheme="teal"
+          >
+            Login
+          </Button>
+          <Text fontSize="sm" textAlign="right" color="gray.600">
+            Lupa Kata Sandi?{" "}
+            <a href="/reset-password" style={{ color: "blue" }}>
+              Reset Password
+            </a>
+          </Text>
+          <Flex my="1px" align="center">
+            <Divider />
+            <Text px="10px" fontSize="sm" color="gray.500">
+              OR
+            </Text>
+            <Divider />
+          </Flex>
+
+          <Flex gap={3}>
+          <Button
+            flex={1}
+            leftIcon={<i class="ci ci-google"></i>}
+            boxShadow="md"
+            bg="white"
+            color="black"
+            border="1px solid #ccc"
+            _hover={{ bg: "gray.100" }}
+            onClick={() => signInWithOAuth("google")}
+          >
+            Google
+          </Button>
+
+          <Button
+            flex={1}
+            leftIcon={<i class="ci ci-facebook"></i>}
+            boxShadow="md"
+            bg="#1877F2"
+            color="white"
+            border="1px solid #ccc"
+            _hover={{ bg: "#1877F2" }}
+            onClick={() => signInWithOAuth("facebook")}
+          >
+            Facebook
+          </Button>
         </Flex>
-        <Button
-  w="100%"
-  colorScheme="red"
-  onClick={() => signInWithOAuth("google")}
->
-  Login with Google
-</Button>
+          
 
-<Button
-  w="100%"
-  colorScheme="blue"
-  onClick={() => signInWithOAuth("facebook")}
->
-  Login with Facebook
-</Button>
+          <Text fontSize="sm" textAlign="center" color="gray.600">
+            Belum punya akun?{" "}
+            <a href="/register" style={{ color: "blue" }}>
+              Daftar
+            </a>
+          </Text>
 
-      </Flex>
-      
+       
 
+          
+        </Flex>
+      </Box>
     </Center>
   );
 }
